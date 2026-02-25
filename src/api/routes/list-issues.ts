@@ -1,13 +1,13 @@
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
-import { eq, ilike } from "drizzle-orm"
-import { db } from "../db"
-import { comments, issues } from "../db/schema"
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
+import { eq, ilike } from 'drizzle-orm'
+import { db } from '../db'
+import { comments, issues } from '../db/schema'
 
 export const IssueStatusSchema = z.enum([
-  "backlog",
-  "todo",
-  "in_progress",
-  "done",
+  'backlog',
+  'todo',
+  'in_progress',
+  'done',
 ])
 
 export const IssueCardSchema = z.object({
@@ -26,8 +26,8 @@ export const IssuesListResponseSchema = z.object({
 })
 
 const route = createRoute({
-  method: "get",
-  path: "/issues",
+  method: 'get',
+  path: '/issues',
   request: {
     query: z.object({
       status: IssueStatusSchema.optional(),
@@ -37,17 +37,17 @@ const route = createRoute({
   responses: {
     200: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: IssuesListResponseSchema,
         },
       },
-      description: "List of issues grouped by status",
+      description: 'List of issues grouped by status',
     },
   },
 })
 
 export const listIssues = new OpenAPIHono().openapi(route, async (c) => {
-  const { status, search } = c.req.valid("query")
+  const { status, search } = c.req.valid('query')
 
   let query = db.select().from(issues)
 
@@ -79,12 +79,12 @@ export const listIssues = new OpenAPIHono().openapi(route, async (c) => {
   )
 
   const grouped = {
-    backlog: issuesWithCounts.filter((issue) => issue.status === "backlog"),
-    todo: issuesWithCounts.filter((issue) => issue.status === "todo"),
+    backlog: issuesWithCounts.filter((issue) => issue.status === 'backlog'),
+    todo: issuesWithCounts.filter((issue) => issue.status === 'todo'),
     in_progress: issuesWithCounts.filter(
-      (issue) => issue.status === "in_progress",
+      (issue) => issue.status === 'in_progress',
     ),
-    done: issuesWithCounts.filter((issue) => issue.status === "done"),
+    done: issuesWithCounts.filter((issue) => issue.status === 'done'),
   }
 
   return c.json(grouped, 200)

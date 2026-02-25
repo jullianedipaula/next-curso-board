@@ -1,49 +1,49 @@
-import "dotenv/config"
-import { faker } from "@faker-js/faker"
-import { sql } from "drizzle-orm"
-import { db } from "./index"
-import { comments, issues } from "./schema"
+import 'dotenv/config'
+import { faker } from '@faker-js/faker'
+import { sql } from 'drizzle-orm'
+import { db } from './index'
+import { comments, issues } from './schema'
 
 const issueNames = [
-  "Add dark mode support",
-  "Fix responsive layout on mobile",
-  "Implement user authentication",
-  "Update dependencies to latest versions",
-  "Add unit tests for API endpoints",
-  "Improve page load performance",
-  "Fix memory leak in dashboard",
-  "Add keyboard shortcuts",
-  "Implement search functionality",
-  "Add export to CSV feature",
-  "Fix timezone handling",
-  "Add email notifications",
-  "Improve error messages",
-  "Add documentation for API",
-  "Fix security vulnerability in auth",
-  "Add analytics dashboard",
-  "Implement real-time updates",
-  "Add multi-language support",
-  "Fix layout shift issues",
-  "Add drag and drop support",
-  "Optimize database queries",
-  "Add pagination to lists",
-  "Fix color contrast issues",
-  "Add offline mode support",
-  "Implement caching strategy",
-  "Add rate limiting",
-  "Fix cross-browser compatibility",
-  "Add accessibility features",
-  "Improve mobile navigation",
-  "Add image optimization",
-  "Fix date picker bug",
-  "Add bulk actions",
-  "Implement webhooks",
-  "Add custom themes",
-  "Fix validation errors",
+  'Add dark mode support',
+  'Fix responsive layout on mobile',
+  'Implement user authentication',
+  'Update dependencies to latest versions',
+  'Add unit tests for API endpoints',
+  'Improve page load performance',
+  'Fix memory leak in dashboard',
+  'Add keyboard shortcuts',
+  'Implement search functionality',
+  'Add export to CSV feature',
+  'Fix timezone handling',
+  'Add email notifications',
+  'Improve error messages',
+  'Add documentation for API',
+  'Fix security vulnerability in auth',
+  'Add analytics dashboard',
+  'Implement real-time updates',
+  'Add multi-language support',
+  'Fix layout shift issues',
+  'Add drag and drop support',
+  'Optimize database queries',
+  'Add pagination to lists',
+  'Fix color contrast issues',
+  'Add offline mode support',
+  'Implement caching strategy',
+  'Add rate limiting',
+  'Fix cross-browser compatibility',
+  'Add accessibility features',
+  'Improve mobile navigation',
+  'Add image optimization',
+  'Fix date picker bug',
+  'Add bulk actions',
+  'Implement webhooks',
+  'Add custom themes',
+  'Fix validation errors',
 ]
 
 async function main() {
-  console.log("🗑️  Resetting database...")
+  console.log('🗑️  Resetting database...')
 
   // Truncate tables
   await db.execute(sql`TRUNCATE TABLE comments CASCADE`)
@@ -52,14 +52,14 @@ async function main() {
   // Reset sequence to 0
   await db.execute(sql`ALTER SEQUENCE issue_number_seq RESTART WITH 0`)
 
-  console.log("🌱 Seeding database...")
+  console.log('🌱 Seeding database...')
 
   // Insert 25 issues
   for (let i = 0; i < 25; i++) {
     const randomTitle =
       issueNames[Math.floor(Math.random() * issueNames.length)]
     const randomLikes = Math.floor(Math.random() * 21) // 0-20
-    const statuses = ["backlog", "todo", "in_progress", "done"] as const
+    const statuses = ['backlog', 'todo', 'in_progress', 'done'] as const
     const randomStatus = statuses[Math.floor(Math.random() * statuses.length)]
 
     const [issue] = await db
@@ -83,7 +83,7 @@ async function main() {
     }
   }
 
-  const statuses = ["backlog", "todo", "in_progress", "done"] as const
+  const statuses = ['backlog', 'todo', 'in_progress', 'done'] as const
 
   // Insert 25 issues
   for (let i = 0; i < 25; i++) {
@@ -112,11 +112,11 @@ async function main() {
     }
   }
 
-  console.log("✅ Database seeded successfully!")
+  console.log('✅ Database seeded successfully!')
   process.exit(0)
 }
 
 main().catch((error) => {
-  console.error("❌ Error seeding database:", error)
+  console.error('❌ Error seeding database:', error)
   process.exit(1)
 })

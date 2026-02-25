@@ -1,9 +1,9 @@
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
-import { eq } from "drizzle-orm"
-import type { AuthSession } from "../auth"
-import { db } from "../db"
-import { comments, users } from "../db/schema"
-import { requireAuth } from "../middlewares/auth"
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
+import { eq } from 'drizzle-orm'
+import type { AuthSession } from '../auth'
+import { db } from '../db'
+import { comments, users } from '../db/schema'
+import { requireAuth } from '../middlewares/auth'
 
 const UpdateCommentSchema = z.object({
   text: z.string().min(1),
@@ -29,23 +29,23 @@ const ErrorSchema = z.object({
 
 const ParamsSchema = z.object({
   issueId: z.uuidv4().openapi({
-    param: { name: "issueId", in: "path" },
-    example: "550e8400-e29b-41d4-a716-446655440000",
+    param: { name: 'issueId', in: 'path' },
+    example: '550e8400-e29b-41d4-a716-446655440000',
   }),
   commentId: z.uuidv4().openapi({
-    param: { name: "commentId", in: "path" },
-    example: "550e8400-e29b-41d4-a716-446655440001",
+    param: { name: 'commentId', in: 'path' },
+    example: '550e8400-e29b-41d4-a716-446655440001',
   }),
 })
 
 const route = createRoute({
-  method: "patch",
-  path: "/issues/{issueId}/comments/{commentId}",
+  method: 'patch',
+  path: '/issues/{issueId}/comments/{commentId}',
   request: {
     params: ParamsSchema,
     body: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: UpdateCommentSchema,
         },
       },
@@ -54,52 +54,52 @@ const route = createRoute({
   responses: {
     200: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: CommentSchema,
         },
       },
-      description: "Comment updated successfully",
+      description: 'Comment updated successfully',
     },
     401: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: ErrorSchema,
         },
       },
-      description: "Unauthorized",
+      description: 'Unauthorized',
     },
     403: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: ErrorSchema,
         },
       },
-      description: "Forbidden - You can only edit your own comments",
+      description: 'Forbidden - You can only edit your own comments',
     },
     404: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: ErrorSchema,
         },
       },
-      description: "Comment not found",
+      description: 'Comment not found',
     },
   },
 })
 
 const app = new OpenAPIHono<{
   Variables: {
-    user: AuthSession["user"] | null
-    session: AuthSession["session"] | null
+    user: AuthSession['user'] | null
+    session: AuthSession['session'] | null
   }
 }>()
 
 app.use(requireAuth)
 
 export const updateComment = app.openapi(route, async (c) => {
-  const { commentId } = c.req.valid("param")
-  const body = c.req.valid("json")
-  const user = c.get("user")
+  const { commentId } = c.req.valid('param')
+  const body = c.req.valid('json')
+  const user = c.get('user')
 
   // Check if comment exists
   const [existingComment] = await db
@@ -110,7 +110,7 @@ export const updateComment = app.openapi(route, async (c) => {
   if (!existingComment) {
     return c.json(
       {
-        error: "Comment not found",
+        error: 'Comment not found',
         message: `Comment with id ${commentId} does not exist`,
       },
       404,
@@ -126,8 +126,8 @@ export const updateComment = app.openapi(route, async (c) => {
   if (existingComment.authorName !== author.name) {
     return c.json(
       {
-        error: "Unauthorized",
-        message: "You can only edit your own comments",
+        error: 'Unauthorized',
+        message: 'You can only edit your own comments',
       },
       403,
     )

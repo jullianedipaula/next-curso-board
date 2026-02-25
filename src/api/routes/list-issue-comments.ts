@@ -1,7 +1,7 @@
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
-import { desc, eq } from "drizzle-orm"
-import { db } from "../db"
-import { comments, issues } from "../db/schema"
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
+import { desc, eq } from 'drizzle-orm'
+import { db } from '../db'
+import { comments, issues } from '../db/schema'
 
 export const CommentAuthorSchema = z.object({
   name: z.string(),
@@ -30,8 +30,8 @@ const ErrorSchema = z.object({
 
 const ParamsSchema = z.object({
   id: z.uuidv4().openapi({
-    param: { name: "id", in: "path" },
-    example: "550e8400-e29b-41d4-a716-446655440000",
+    param: { name: 'id', in: 'path' },
+    example: '550e8400-e29b-41d4-a716-446655440000',
   }),
 })
 
@@ -41,8 +41,8 @@ const QuerySchema = z.object({
 })
 
 const route = createRoute({
-  method: "get",
-  path: "/issues/{id}/comments",
+  method: 'get',
+  path: '/issues/{id}/comments',
   request: {
     params: ParamsSchema,
     query: QuerySchema,
@@ -50,26 +50,26 @@ const route = createRoute({
   responses: {
     200: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: CommentsListResponseSchema,
         },
       },
-      description: "List of comments for the issue",
+      description: 'List of comments for the issue',
     },
     404: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: ErrorSchema,
         },
       },
-      description: "Issue not found",
+      description: 'Issue not found',
     },
   },
 })
 
 export const listIssueComments = new OpenAPIHono().openapi(route, async (c) => {
-  const { id } = c.req.valid("param")
-  const { limit, offset } = c.req.valid("query")
+  const { id } = c.req.valid('param')
+  const { limit, offset } = c.req.valid('query')
 
   // Check if issue exists
   const [issue] = await db.select().from(issues).where(eq(issues.id, id))
@@ -77,7 +77,7 @@ export const listIssueComments = new OpenAPIHono().openapi(route, async (c) => {
   if (!issue) {
     return c.json(
       {
-        error: "Issue not found",
+        error: 'Issue not found',
         message: `Issue with id ${id} does not exist`,
       },
       404,

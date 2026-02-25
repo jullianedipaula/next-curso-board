@@ -1,13 +1,13 @@
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
-import { db } from "../db"
-import { issues } from "../db/schema"
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
+import { db } from '../db'
+import { issues } from '../db/schema'
 
-const IssueStatusSchema = z.enum(["backlog", "todo", "in_progress", "done"])
+const IssueStatusSchema = z.enum(['backlog', 'todo', 'in_progress', 'done'])
 
 const CreateIssueSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
-  status: IssueStatusSchema.optional().default("backlog"),
+  status: IssueStatusSchema.optional().default('backlog'),
 })
 
 const IssueSchema = z.object({
@@ -27,12 +27,12 @@ const ErrorSchema = z.object({
 })
 
 const route = createRoute({
-  method: "post",
-  path: "/issues",
+  method: 'post',
+  path: '/issues',
   request: {
     body: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: CreateIssueSchema,
         },
       },
@@ -41,25 +41,25 @@ const route = createRoute({
   responses: {
     201: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: IssueSchema,
         },
       },
-      description: "Issue created successfully",
+      description: 'Issue created successfully',
     },
     400: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: ErrorSchema,
         },
       },
-      description: "Validation failed",
+      description: 'Validation failed',
     },
   },
 })
 
 export const createIssue = new OpenAPIHono().openapi(route, async (c) => {
-  const body = c.req.valid("json")
+  const body = c.req.valid('json')
 
   const [issue] = await db
     .insert(issues)

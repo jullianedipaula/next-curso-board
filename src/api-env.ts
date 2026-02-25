@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from 'zod'
 
 const apiEnvSchema = z.object({
   DATABASE_URL: z.url(),
